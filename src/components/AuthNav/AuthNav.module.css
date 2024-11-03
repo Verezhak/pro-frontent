@@ -1,0 +1,26 @@
+.list {
+    display: flex;
+    gap: 10px;
+}
+
+.link {
+    display: flex;
+    background-color: transparent;
+    padding: 5px 15px;
+    font-size: 24px;
+    border-radius: 8px;
+    color: white;
+}
+
+.active {
+    background-color: rgba(110, 126, 145, 0.306);
+    color: #CD00CD;
+    border-bottom: 1px solid #CD00CD;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+    .link {
+        font-size: 12px;
+    }
+
+}

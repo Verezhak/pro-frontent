@@ -1,0 +1,23 @@
+.notFound {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 54px;
+    font-weight: 900;
+    color: red;
+    margin-bottom: 30px;
+}
+
+.link {
+
+    background-color: #58c8dc;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+    color: white;
+
+    &:hover {
+        color: #CD00CD;
+    }
+}
