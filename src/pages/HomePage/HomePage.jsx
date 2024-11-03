@@ -1,12 +1,14 @@
-import s from './HomePage.module.css'
-import img from '../../images/phoneBookImg.jpg';
-const HomePage = () => {
-    return (
-        <div className={s.wrapper}>
-            <h1>Welcome to the <span>phone book</span> app!</h1>
-            <img src={img} alt="Phone Book" />
-        </div>
-    )
-};
+/*шаблон сторінки для корекції  */
+import Header from '../../components/Header/Header.jsx'
+import SideBar from '../../components/SideBar/SideBar.jsx'
+import ScreensPage from '../ScreensPage/ScreensPage'
 
-export default HomePage;
+const HomePage = () => (
+	<div className='home-page'>
+		<Header />
+		<SideBar />
+		<ScreensPage />
+	</div>
+)
+
+export default HomePage
