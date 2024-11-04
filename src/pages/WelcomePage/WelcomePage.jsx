@@ -12,7 +12,7 @@ const WelcomePage = () => (
 		</div>
 		<p className='welcomeText'>
 			Supercharge your productivity and take control of your tasks with Task Pro
-			- Don't wait, start achieving your goals now!
+			- Do not wait, start achieving your goals now!
 		</p>
 		<Link to='/auth/register' className='linkRegister'>
 			Register

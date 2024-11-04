@@ -1,13 +1,15 @@
 /*шаблон сторінки для корекції  */
-import Header from '../../components/Header/Header.jsx'
+import BoardDetails from '../../components/BoardDetails/BoardDetails.jsx'
+// import Header from '../../components/Header/Header.jsx'
 import SideBar from '../../components/SideBar/SideBar.jsx'
-import ScreensPage from '../ScreensPage/ScreensPage'
-
+// import ScreensPage from '../ScreensPage/ScreensPage'
+import s from './HomePage.module.css'
 const HomePage = () => (
-	<div className='home-page'>
-		<Header />
+	<div className={s.homePage}>
+		{/* <Header /> */}
 		<SideBar />
-		<ScreensPage />
+		<BoardDetails />
+		{/* <ScreensPage /> */}
 	</div>
 )
 

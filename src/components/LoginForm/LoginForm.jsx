@@ -1,84 +1,61 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import './LoginForm.css';
-import toast from 'react-hot-toast';
-import { login } from '../../redux/auth/operations.js';
-import { Link } from 'react-router-dom';
-import sprite from '../../icons/icons.svg';
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import * as Yup from 'yup';
+import s from './LoginForm.module.css';
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../redux/auth/operations";
+import { selectIsLoggedIn } from "../../redux/auth/selectors";
+import { Link, Navigate } from "react-router-dom";
 
-const loginSchema = yup.object().shape({
-  email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup
-    .string()
-    .min(8, 'Too Short! Please type min 8 symbols')
-    .max(64, 'Too Long! Must be up max 64 symbols')
-    .required('Password is required'),
-});
 
-const LoginForm = ({ onSuccess }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(loginSchema),
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email('Invalid email address').required('Required'),
+    password: Yup.string().min(6, 'Password must be at least 6 characters').required('Required'),
   });
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const onSubmit = async data => {
-    setIsLoading(true);
-    try {
-      await login(data);
-      toast.success('Login successful!');
-      onSuccess();
-    } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
-    }
+  const initialValues = {
+    email: '',
+    password: '',
+  };
+  const handleSubmit = (values, { resetForm }) => {
+    dispatch(login(values));
+    resetForm();
   };
 
+  if (isLoggedIn) {
+    return <Navigate to='/home' />;
+  }
+
   return (
-    <div className="container">
-      <form className="loginForm" onSubmit={handleSubmit(onSubmit)}>
-        <div className="formTitle">
-          <Link to="/auth/register" className="register">
-            Registration
-          </Link>
-          <Link to="/auth/login" className="login active">
-            Log In
-          </Link>
-        </div>
-        <input {...register('email')} placeholder="Email" />
-        {errors.email && <p>{errors.email.message}</p>}
+    <div className={s.formContainer}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        <Form autoComplete="off">
+          <label htmlFor="email">Email
+            <Field name="email" type="email" id="email" autoComplete="email" />
+          </label>
+          <ErrorMessage name="name" component="div" className={s.error} />
+          <label htmlFor="password">Password
+            <Field name="password" type="password" id="password" autoComplete="password" />
+          </label>
+          <ErrorMessage name="password" component="div" className={s.error} />
 
-        <div className="passwordInput">
-          <input
-            {...register('password')}
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Create a password"
-          />
-          <span
-            className="passwordToggleIcon"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            <svg className="icon">
-              <use href={`${sprite}#eye-icon`} />
-            </svg>
-          </span>
-        </div>
-        {errors.password && <p>{errors.password.message}</p>}
+          <button type="submit">
+            Sign in
+          </button>
+          <p>
+            You do not have account?<Link to='/register'>Sign up!</Link>
+          </p>
+        </Form>
+      </Formik>
 
-        <button className="loginButton" type="submit" disabled={isLoading}>
-          {isLoading ? 'Logging in...' : 'Log In Now'}
-        </button>
-      </form>
     </div>
-  );
+  )
 };
 
 export default LoginForm;
