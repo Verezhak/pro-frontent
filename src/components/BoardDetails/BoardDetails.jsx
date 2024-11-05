@@ -23,7 +23,10 @@ const BoardDetails = () => {
         if (selectedBoard && token) {
             dispatch(fetchColumns({ boardId: selectedBoard._id, token }));
         }
+        console.log("Selected Board:", selectedBoard);
     }, [dispatch, selectedBoard, token]);
+
+
 
     const handleAddColumn = (columnName) => {
         if (selectedBoard && token) {

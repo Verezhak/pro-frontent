@@ -1,8 +1,9 @@
+// src/redux/cards/slice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { addCard, fetchCards, fetchCardById, deleteCard, updateCard } from './operations';
 
 const initialState = {
-    items: [], // Масив усіх завдань
+    items: [], // Масив карток
     loading: false,
     error: null,
 };
@@ -19,7 +20,7 @@ const cardsSlice = createSlice({
             })
             .addCase(fetchCards.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items = Array.isArray(action.payload) ? action.payload : [];
+                state.items = action.payload;
             })
             .addCase(fetchCards.rejected, (state, action) => {
                 state.loading = false;
@@ -32,12 +33,11 @@ const cardsSlice = createSlice({
             .addCase(fetchCardById.fulfilled, (state, action) => {
                 state.loading = false;
                 const card = action.payload;
-                // Додаємо картку або оновлюємо, якщо вона вже є
                 const index = state.items.findIndex(item => item._id === card._id);
                 if (index !== -1) {
-                    state.items[index] = card;
+                    state.items[index] = card; // Оновлення картки, якщо вона вже є
                 } else {
-                    state.items.push(card);
+                    state.items.push(card)// Додавання нової картки
                 }
             })
             .addCase(fetchCardById.rejected, (state, action) => {
@@ -50,7 +50,7 @@ const cardsSlice = createSlice({
             })
             .addCase(addCard.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items.push(action.payload);
+                state.items.push(action.payload); // Додавання нової картки
             })
             .addCase(addCard.rejected, (state, action) => {
                 state.loading = false;
@@ -63,7 +63,7 @@ const cardsSlice = createSlice({
             .addCase(deleteCard.fulfilled, (state, action) => {
                 state.loading = false;
                 const cardId = action.payload;
-                state.items = state.items.filter(card => card._id !== cardId);
+                state.items = state.items.filter(card => card._id !== cardId); // Видалення картки
             })
             .addCase(deleteCard.rejected, (state, action) => {
                 state.loading = false;
@@ -78,7 +78,7 @@ const cardsSlice = createSlice({
                 const updatedCard = action.payload;
                 const index = state.items.findIndex(card => card._id === updatedCard._id);
                 if (index !== -1) {
-                    state.items[index] = updatedCard;
+                    state.items[index] = updatedCard; // Оновлення картки
                 }
             })
             .addCase(updateCard.rejected, (state, action) => {

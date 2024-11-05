@@ -6,8 +6,14 @@ const boardsSlice = createSlice({
     name: 'boards',
     initialState: {
         items: [], // Масив бордів
+        selectedBoard: null,
         loading: false,
         error: null,
+    },
+    reducers: {
+        setSelectedBoard(state, action) {
+            state.selectedBoard = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -37,5 +43,6 @@ const boardsSlice = createSlice({
             });
     },
 });
+export const { setSelectedBoard } = boardsSlice.actions;
 
 export const boardsReducer = boardsSlice.reducer;

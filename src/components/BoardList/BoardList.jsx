@@ -1,14 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
 
-import s from './BoardList.module.css'
-import { selectBoards, selectSelectedBoard } from "../../redux/boards/selectors.js";
+import { useDispatch, useSelector } from "react-redux";
+import s from './BoardList.module.css';
+import { selectBoards } from "../../redux/boards/selectors.js";
+import { setSelectedBoard } from "../../redux/boards/slice.js";
 
 const BoardList = () => {
     const dispatch = useDispatch();
     const boards = useSelector(selectBoards);
 
     const handleBoardClick = (board) => {
-        dispatch(selectSelectedBoard(board));
+        dispatch(setSelectedBoard(board));
     };
 
     return (

@@ -1,94 +1,115 @@
-
-
+// src/redux/cards/operations.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-axios.defaults.baseURL = 'http://localhost:3000';
-
 
 
 export const fetchCards = createAsyncThunk(
     'cards/fetchCards',
-    async ({ boardId, token }, thunkAPI) => {
+    async ({ boardId, columnId, token }, thunkAPI) => {
         try {
-            const { data } = await axios.get(`/cards?boardId=${boardId}`, {
+            const response = await axios.get(`/cards/${boardId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+                params: { columnId } // Додаємо columnId як параметр
             });
-            return data;
+            return response.data.data; // Припускаючи, що дані знаходяться в data
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+            return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 );
 
-// Redux-операція для додавання картки
-export const addCard = createAsyncThunk(
-    'cards/addCard',
-    async ({ boardId, columnId, title, description, color, token }, thunkAPI) => {
-        try {
-            const { data } = await axios.post(
-                `/cards`,
-                { title, description, color, columnId, boardId },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            return data;
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
-    }
-);
+// Фетч усіх карток за boardId
+// export const fetchCards = createAsyncThunk(
+//     'cards/fetchCards',
+//     async ({ boardId, token }, thunkAPI) => {
+//         try {
+//             const response = await axios.get(`/cards/${boardId}`, {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//             });
+//             return response.data.data; // Повертаємо масив карток
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error.response.data.message);
+//         }
+//     }
+// );
+
+// Фетч картки за ID
 export const fetchCardById = createAsyncThunk(
     'cards/fetchCardById',
     async ({ boardId, cardId, token }, thunkAPI) => {
         try {
-            const { data } = await axios.get(`/cards/${cardId}?boardId=${boardId}`, {
+            const response = await axios.get(`/cards/${boardId}/${cardId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            return data;
+            return response.data.data; // Повертаємо картку
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+            return thunkAPI.rejectWithValue(error.response.data.message);
         }
     }
 );
-export const deleteCard = createAsyncThunk(
-    'cards/deleteCard',
-    async ({ boardId, cardId, token }, thunkAPI) => {
+
+// Додати нову картку
+export const addCard = createAsyncThunk(
+    'cards/addCard',
+    async ({ boardId, columnId, title, description, color, token }, thunkAPI) => {
         try {
-            await axios.delete(`/cards/${cardId}?boardId=${boardId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            return cardId; // Повертаємо `cardId` для видалення з Redux-стану
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
-    }
-);
-export const updateCard = createAsyncThunk(
-    'cards/updateCard',
-    async ({ boardId, cardId, updateData, token }, thunkAPI) => {
-        try {
-            const { data } = await axios.patch(
-                `/cards/${cardId}?boardId=${boardId}`,
-                updateData,
+            const response = await axios.post(
+                `/cards`,
+                { boardId, columnId, title, description, color },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
             );
-            return data;
+            return response.data.data; // Повертаємо нову картку
         } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
+            return thunkAPI.rejectWithValue(error.response.data.message);
+        }
+    }
+);
+
+// Оновити картку
+export const updateCard = createAsyncThunk(
+    'cards/updateCard',
+    async ({ boardId, cardId, payload, token }, thunkAPI) => {
+        try {
+            const response = await axios.patch(
+                `/cards/${boardId}/${cardId}`,
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data.data; // Повертаємо оновлену картку
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.response.data.message);
+        }
+    }
+);
+
+// Видалити картку
+export const deleteCard = createAsyncThunk(
+    'cards/deleteCard',
+    async ({ cardId, token }, thunkAPI) => {
+        try {
+            await axios.delete(`/cards/${cardId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return cardId; // Повертаємо ID картки для видалення
+        } catch (error) {
+            console.log("Delete card error:", error.response?.data || error.message);
+            return thunkAPI.rejectWithValue(error.response.data.message);
         }
     }
 );
