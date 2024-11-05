@@ -1,6 +1,8 @@
+import Board from "../../components/Board/Board.jsx";
+
 const ScreenPage = () => (
   <div className="screen-page">
-    <h1>test Screen Page</h1>
+    <Board />
   </div>
 );
 

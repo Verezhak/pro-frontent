@@ -7,12 +7,19 @@ const boardsSlice = createSlice({
     initialState: {
         items: [], // Масив бордів
         selectedBoard: null,
+        modalOpen: false,
         loading: false,
         error: null,
     },
     reducers: {
         setSelectedBoard(state, action) {
             state.selectedBoard = action.payload;
+        },
+        openModal(state) {
+            state.isModalOpen = true;
+        },
+        closeModal(state) {
+            state.isModalOpen = false;
         },
     },
     extraReducers: (builder) => {
@@ -43,6 +50,6 @@ const boardsSlice = createSlice({
             });
     },
 });
-export const { setSelectedBoard } = boardsSlice.actions;
+export const { setSelectedBoard, openModal, closeModal, } = boardsSlice.actions;
 
 export const boardsReducer = boardsSlice.reducer;

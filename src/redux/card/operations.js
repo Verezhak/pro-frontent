@@ -2,16 +2,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://localhost:3000';
+
 
 export const fetchCards = createAsyncThunk(
     'cards/fetchCards',
     async ({ boardId, columnId, token }, thunkAPI) => {
         try {
-            const response = await axios.get(`/cards/${boardId}`, {
+            const response = await axios.get('/cards', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                params: { columnId } // Додаємо columnId як параметр
+                params: { boardId, columnId } // Додаємо columnId як параметр
             });
             return response.data.data; // Припускаючи, що дані знаходяться в data
         } catch (error) {
@@ -20,24 +22,6 @@ export const fetchCards = createAsyncThunk(
     }
 );
 
-// Фетч усіх карток за boardId
-// export const fetchCards = createAsyncThunk(
-//     'cards/fetchCards',
-//     async ({ boardId, token }, thunkAPI) => {
-//         try {
-//             const response = await axios.get(`/cards/${boardId}`, {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             });
-//             return response.data.data; // Повертаємо масив карток
-//         } catch (error) {
-//             return thunkAPI.rejectWithValue(error.response.data.message);
-//         }
-//     }
-// );
-
-// Фетч картки за ID
 export const fetchCardById = createAsyncThunk(
     'cards/fetchCardById',
     async ({ boardId, cardId, token }, thunkAPI) => {
@@ -60,7 +44,7 @@ export const addCard = createAsyncThunk(
     async ({ boardId, columnId, title, description, color, token }, thunkAPI) => {
         try {
             const response = await axios.post(
-                `/cards`,
+                '/cards',
                 { boardId, columnId, title, description, color },
                 {
                     headers: {
