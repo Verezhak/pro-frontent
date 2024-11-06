@@ -60,7 +60,7 @@ const persistConfig = {
   key: 'auth',
   version: 1,
   storage,
-  whitelist: ['token', 'user'], // Зберігаємо token і user
+  whitelist: ['token', 'user', 'cards'],
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
@@ -69,7 +69,7 @@ export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     boards: boardsReducer,
-    columns: columnsReducer, 
+    columns: columnsReducer,
     cards: cardsReducer,
   },
   middleware: (getDefaultMiddleware) =>
