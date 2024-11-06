@@ -1,11 +1,11 @@
-// columnsSlice.js
+
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchColumns, addColumn } from './operations';
 
 const columnsSlice = createSlice({
     name: 'columns',
     initialState: {
-        items: [], // Масив колонок
+        items: [],
         loading: false,
         error: null,
     },
@@ -17,7 +17,7 @@ const columnsSlice = createSlice({
             })
             .addCase(fetchColumns.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items = action.payload; // Зберігаємо колонки у стані
+                state.items = action.payload;
             })
             .addCase(fetchColumns.rejected, (state, action) => {
                 state.loading = false;
@@ -29,7 +29,7 @@ const columnsSlice = createSlice({
             })
             .addCase(addColumn.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items.push(action.payload); // Додаємо нову колонку до списку
+                state.items.push(action.payload);
             })
             .addCase(addColumn.rejected, (state, action) => {
                 state.loading = false;

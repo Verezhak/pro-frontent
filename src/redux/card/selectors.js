@@ -1,4 +1,4 @@
-// src/redux/cards/selectors.js
+
 export const selectAllCards = (state) => state.items.cards;
 export const selectCardById = (state, cardId) =>
     state.cards.items.find(card => card._id === cardId);

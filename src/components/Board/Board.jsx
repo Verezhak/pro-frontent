@@ -10,14 +10,14 @@ import AddColumnModal from "../AddColumnModal/AddColumnModal.jsx";
 import { closeModal, openModal } from "../../redux/boards/slice.js";
 import Column from "../Column/Column.jsx";
 import s from './Board.module.css'
-// import { fetchCards } from "../../redux/card/operations.js";
+
 
 const Board = () => {
     const dispatch = useDispatch();
     const isModalOpen = useSelector(selectIsModalOpen);
     const selectedBoard = useSelector(selectSelectedBoard);
     const token = useSelector(selectToken);
-    const columns = useSelector(state => state.columns.items);  // Отримуємо колонки для вибраної дошки
+    const columns = useSelector(state => state.columns.items);
 
     const handleOpenModal = () => {
         dispatch(openModal());
@@ -26,19 +26,6 @@ const Board = () => {
     const handleCloseModal = () => {
         dispatch(closeModal());
     };
-
-    // useEffect(() => {
-    //     if (selectedBoard && token) {
-    //         // Завантажуємо колонки для вибраного борда
-    //         dispatch(fetchColumns({ boardId: selectedBoard._id, token }))
-    //             .then((result) => {
-    //                 // Після завантаження колонок викликаємо fetchCards для кожної колонки
-    //                 result.payload.forEach(column => {
-    //                     dispatch(fetchCards({ boardId: selectedBoard._id, columnId: column._id, token }));
-    //                 });
-    //             });
-    //     }
-    // }, [dispatch, selectedBoard, token]);
 
     useEffect(() => {
         if (selectedBoard && token) {
@@ -56,7 +43,7 @@ const Board = () => {
     if (!selectedBoard) return <div>Select a board to see details.</div>;
 
     return (
-        <div>
+        <div className={s.board}>
             <h2>Board: {selectedBoard.title}</h2>
             <button onClick={handleOpenModal}>Add Column</button>
 
@@ -67,7 +54,6 @@ const Board = () => {
                 />
             )}
 
-            {/* Рендеринг колонок */}
             <div className={s.columns}>
                 {columns.map(column => (
                     <Column key={column._id} columnId={column._id} />

@@ -1,11 +1,11 @@
-// boardsSlice.js
+
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchBoards, addBoard } from './operations';
 
 const boardsSlice = createSlice({
     name: 'boards',
     initialState: {
-        items: [], // Масив бордів
+        items: [],
         selectedBoard: null,
         modalOpen: false,
         loading: false,
@@ -30,7 +30,7 @@ const boardsSlice = createSlice({
             })
             .addCase(fetchBoards.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items = action.payload; // Зберігаємо борди у стані
+                state.items = action.payload;
             })
             .addCase(fetchBoards.rejected, (state, action) => {
                 state.loading = false;
@@ -42,7 +42,7 @@ const boardsSlice = createSlice({
             })
             .addCase(addBoard.fulfilled, (state, action) => {
                 state.loading = false;
-                state.items.push(action.payload); // Додаємо новий борд до списку
+                state.items.push(action.payload);
             })
             .addCase(addBoard.rejected, (state, action) => {
                 state.loading = false;

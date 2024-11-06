@@ -4,7 +4,7 @@ import { useState } from 'react';
 const AddCardModal = ({ onAdd, onClose }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [color, setColor] = useState('blue'); // Встановіть значення за замовчуванням
+    const [color, setColor] = useState('blue');
 
     const handleSubmit = (e) => {
         e.preventDefault();
