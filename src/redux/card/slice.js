@@ -35,9 +35,9 @@ const cardsSlice = createSlice({
                 const card = action.payload;
                 const index = state.items.findIndex(item => item._id === card._id);
                 if (index !== -1) {
-                    state.cards[index] = card;
+                    state.items[index] = card;
                 } else {
-                    state.cards.push(card)
+                    state.items.push(card)
                 }
             })
             .addCase(fetchCardById.rejected, (state, action) => {

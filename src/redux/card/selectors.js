@@ -9,3 +9,6 @@ export const selectCardsByColumnId = (state, columnId) => {
     console.log('state.cards.items:', state.cards.items);
     return state.cards.items.filter(card => card.columnId === columnId);
 };
+
+
+export const selectCards = (state) => state.cards.items;

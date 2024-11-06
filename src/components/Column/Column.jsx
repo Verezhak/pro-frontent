@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectToken } from "../../redux/auth/selectors.js";
 import { selectSelectedBoard } from "../../redux/boards/selectors.js";
@@ -13,7 +13,16 @@ const Column = ({ columnId }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = useSelector(selectToken);
     const selectedBoard = useSelector(selectSelectedBoard);
-    const boardId = selectedBoard?._id;
+    const boardId = selectedBoard._id;
+
+
+   
+
+    useEffect(() => {
+        if (boardId && columnId) {
+            dispatch(fetchCards({ boardId, columnId, token }));
+        }
+    }, [boardId, columnId, dispatch, token]);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
