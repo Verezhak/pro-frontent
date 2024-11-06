@@ -4,14 +4,19 @@ import { selectCardsByColumnId } from "../../redux/card/selectors.js";
 import s from './CardList.module.css'
 import sprite from '../../icons/icons.svg'
 import { useEffect, useState } from "react";
+import MoveCardMenu from "../MoveCardMenu/MoveCardMenu.jsx";
+import { selectSelectedBoard } from "../../redux/boards/selectors.js";
 
 
 const CardList = ({ columnId }) => {
     const cards = useSelector((state) => selectCardsByColumnId(state, columnId));
+    const selectedBoard = useSelector(selectSelectedBoard);
+    const boardId = selectedBoard._id;
+
     const [expandedCardId, setExpandedCardId] = useState(null);
     const [today, setToday] = useState(new Date()); 
-    const columnCards = cards.filter(card => card.columnId === columnId);
-    
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const isDeadlineToday = (deadline) => {
             const deadlineDate = new Date(deadline);
             const currentDate = new Date(today);
@@ -31,15 +36,17 @@ const CardList = ({ columnId }) => {
             setExpandedCardId(expandedCardId === cardId ? null : cardId);
         };
       
-      
+       const toggleMenu = () => {
+        setIsMenuOpen((prev) => !prev); 
+    };
 
     return (
 
         <div className={s.cardsContainer}>
-            {columnCards.length === 0 ? (
+            {cards.length === 0 ? (
                 <p>No cards available in this column.</p>
             ) : (
-                columnCards.map((card) => (
+                cards.map((card) => (
                     <div key={card._id} className={s.card}
                         style={{ '--card-color': card.color }}
                     >
@@ -68,7 +75,7 @@ const CardList = ({ columnId }) => {
                                         </div>
                                     )
                                 }
-                                <button>
+                                <button onClick={toggleMenu}>
                                     <svg className={s.icon} width="16" height="16">
                                         <use href={`${sprite}#icon-circle-right`} />
                                     </svg>
@@ -85,7 +92,14 @@ const CardList = ({ columnId }) => {
                                 </button>
                             </div>
                         </div>
-
+                        {isMenuOpen && (
+                            <MoveCardMenu
+                                cardId={card._id}
+                                columnId={columnId}
+                                boardId={boardId}
+                                onClose={toggleMenu} 
+                            />
+                        )}
                     </div>
                 ))
             )}

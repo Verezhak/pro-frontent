@@ -1,9 +1,9 @@
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectToken } from "../../redux/auth/selectors.js";
 import { selectSelectedBoard } from "../../redux/boards/selectors.js";
-import { addCard, fetchCards } from "../../redux/card/operations.js";
+import { addCard, fetchCards} from "../../redux/card/operations.js";
 import AddCardModal from "../AddCardModal/AddCardModal.jsx";
 import CardList from "../CardList/CardList.jsx";
 import s from './Column.module.css';
@@ -16,14 +16,6 @@ const Column = ({ columnId }) => {
     const boardId = selectedBoard._id;
 
 
-   
-
-    useEffect(() => {
-        if (boardId && columnId) {
-            dispatch(fetchCards({ boardId, columnId, token }));
-        }
-    }, [boardId, columnId, dispatch, token]);
-
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
@@ -33,16 +25,13 @@ const Column = ({ columnId }) => {
     };
 
     const handleAddCard = (taskData) => {
-        console.log("Column ID:", columnId);
         dispatch(addCard({
             ...taskData,
             columnId,
             boardId,
             token,
         })).then(() => {
-
-            dispatch(fetchCards({ boardId, columnId, token }));
-
+            dispatch(fetchCards({ boardId, token }));
         });
 
         handleCloseModal();

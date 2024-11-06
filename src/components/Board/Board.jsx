@@ -12,12 +12,16 @@ import Column from "../Column/Column.jsx";
 import s from './Board.module.css'
 
 
+
 const Board = () => {
     const dispatch = useDispatch();
     const isModalOpen = useSelector(selectIsModalOpen);
     const selectedBoard = useSelector(selectSelectedBoard);
     const token = useSelector(selectToken);
     const columns = useSelector(state => state.columns.items);
+
+   
+
 
     const handleOpenModal = () => {
         dispatch(openModal());
@@ -32,6 +36,8 @@ const Board = () => {
             dispatch(fetchColumns({ boardId: selectedBoard._id, token }));
         }
     }, [dispatch, selectedBoard, token]);
+
+ 
 
     const handleAddColumn = columnName => {
         if (selectedBoard && token) {

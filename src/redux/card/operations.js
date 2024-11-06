@@ -5,29 +5,15 @@ import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:3000';
 
 
-// export const fetchAllCardsForBoard = createAsyncThunk(
-//     'cards/fetchAllCardsForBoard',
-//     async ({ boardId, token }, thunkAPI) => {
-//         try {
-//             const response = await axios.get(`/boards/${boardId}/cards`, {
-//                 headers: { Authorization: `Bearer ${token}` }
-//             });
-//             return response.data.data; // Повертаємо масив карток
-//         } catch (error) {
-//             return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
-//         }
-//     }
-// );
-
 export const fetchCards = createAsyncThunk(
     'cards/fetchCards',
-    async ({ boardId, columnId, token }, thunkAPI) => {
+    async ({ boardId,token }, thunkAPI) => {
         try {
             const response = await axios.get('/cards', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-                params: { boardId, columnId }
+                params: { boardId }
             });
             console.log(response.data);
             return response.data;
@@ -37,23 +23,6 @@ export const fetchCards = createAsyncThunk(
     }
 );
 
-
-
-export const fetchCardById = createAsyncThunk(
-    'cards/fetchCardById',
-    async ({ boardId, cardId, token }, thunkAPI) => {
-        try {
-            const response = await axios.get(`/cards/${boardId}/${cardId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            return response.data.data;
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.response.data.message);
-        }
-    }
-);
 
 export const addCard = createAsyncThunk(
     'cards/addCard',
@@ -81,7 +50,7 @@ export const addCard = createAsyncThunk(
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                }
+                },
             );
             return response.data;
         } catch (error) {
@@ -96,20 +65,20 @@ export const addCard = createAsyncThunk(
 
 export const updateCard = createAsyncThunk(
     'cards/updateCard',
-    async ({ boardId, cardId, payload, token }, thunkAPI) => {
+    async ({ boardId, cardId,newColumnId,  token }, thunkAPI) => {
         try {
 
-            const response = await axios.patch(
-                `/cards/${boardId}/${cardId}`,
-                payload,
+            const response = await axios.patch(`/cards/${cardId}`,
+                { boardId, columnId: newColumnId }, 
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
-                }
+                },
+            
             );
             console.log("Response data:", response.data);
-            return response.data.data;
+            return response.data;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.response.data.message);
         }
@@ -133,3 +102,47 @@ export const deleteCard = createAsyncThunk(
         }
     }
 );
+
+
+
+
+
+
+
+// export const fetchCardById = createAsyncThunk(
+//     'cards/fetchCardById',
+//     async ({ boardId, cardId, token }, thunkAPI) => {
+//         try {
+//             const response = await axios.get(`/cards/${boardId}/${cardId}`, {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//             });
+//             return response.data.data;
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error.response.data.message);
+//         }
+//     }
+// );
+
+
+export const moveCard = createAsyncThunk(
+    'cards/moveCard',
+    async ({ cardId, newColumnId, token }, thunkAPI) => {
+      try {
+        const response = await axios.patch(
+          `/cards/${cardId}/move`,  // використовуємо новий роут
+          { newColumnId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        return response.data.data;  // повертаємо оновлену картку
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.response.data.message);
+      }
+    }
+  );
+  

@@ -5,10 +5,17 @@ export const selectCardById = (state, cardId) =>
 export const selectCardsLoading = (state) => state.cards.loading;
 export const selectCardsError = (state) => state.cards.error;
 
-export const selectCardsByColumnId = (state, columnId) => {
-    console.log('state.cards.items:', state.cards.items);
-    return state.cards.items.filter(card => card.columnId === columnId);
-};
+// export const selectCardsByColumnId = (state, columnId) => {
+//     console.log('state.cards.items:', state.cards.items);
+//     return state.cards.items.filter(card => card.columnId === columnId);
+// };
 
 
 export const selectCards = (state) => state.cards.items;
+
+export const selectCardsByColumnId = (state, columnId) => {
+    return state.cards.items.filter(card => card.columnId === columnId);
+  };
+  export const selectCardsByBoardId = (state, boardId) => {
+    return state.cards.items.filter(card => card.boardId === boardId);
+  };
