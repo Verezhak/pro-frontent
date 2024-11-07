@@ -11,7 +11,7 @@ const Card = ({ card,
     openDropdowns,
     filteredColumns }) => {
     const [expandedCardId, setExpandedCardId] = useState(null);
-
+    const { _id, priority, title, description, deadline } = card;
     const toggleDescription = (cardId) => {
         setExpandedCardId(expandedCardId === cardId ? null : cardId);
     };
@@ -20,44 +20,44 @@ const Card = ({ card,
     const getPriorityColor = (priority) => {
         switch (priority) {
             case 'low':
-                return '#9b59b6';
+                return '#8FA1D0';
             case 'medium':
-                return '#ff69b4';
+                return '#E09CB5';
             case 'high':
-                return '#2ecc71';
+                return '#BEDBB0';
             case 'without':
             default:
-                return '#95a5a6';
+                return 'rgba(22, 22, 22, 0.30)';
         }
     };
 
     return (
-        <div className={s.card} style={{ '--card-color': getPriorityColor(card.priority) }}>
-            <h5 className={s.title}>{card.title}</h5>
+        <div className={s.card} style={{ '--card-color': getPriorityColor(priority) }}>
+            <h5 className={s.title}>{title}</h5>
 
             <p
-                className={`${s.description} ${expandedCardId === card._id ? s.expanded : ''}`}
-                onClick={() => toggleDescription(card._id)}
-            >{card.description}</p>
+                className={`${s.description} ${expandedCardId === _id ? s.expanded : ''}`}
+                onClick={() => toggleDescription(_id)}
+            >{description}</p>
 
             <span className={s.line}></span>
             <div className={s.bottom}>
                 <div className={s.action}>
                     <p className={s.priority}>Priority
-                        <span className={s.ops} style={{ backgroundColor: getPriorityColor(card.priority) }}></span>
+                        <span className={s.label} style={{ '--card-color': getPriorityColor(priority) }}>{priority}</span>
                     </p>
-                    <p className={s.deadline}>Deadline<span>{card.deadline}</span></p>
+                    <p className={s.deadline}>Deadline<span>{deadline}</span></p>
                 </div>
 
                 <div className={s.buttons}>
-                    {isDeadlineToday(card.deadline) && (
+                    {isDeadlineToday(deadline) && (
                         <div className={s.deadlineIcon}>
                             <svg width="16" height="16">
                                 <use href={`${sprite}#icon-bell`} />
                             </svg>
                         </div>
                     )}
-                    <button onClick={() => toggleDropdown(card._id)}>
+                    <button onClick={() => toggleDropdown(_id)}>
                         <svg className={s.icon} width="16" height="16">
                             <use href={`${sprite}#icon-circle-right`} />
                         </svg>
@@ -67,7 +67,7 @@ const Card = ({ card,
                             <use href={`${sprite}#icon-pencil-01`} />
                         </svg>
                     </button>
-                    <button onClick={() => handleDelete(card._id)}>
+                    <button onClick={() => handleDelete(_id)}>
                         <svg className={s.icon} width="16" height="16">
                             <use href={`${sprite}#icon-trash-04`} />
                         </svg>

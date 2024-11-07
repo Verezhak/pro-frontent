@@ -1,6 +1,6 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { addCard, fetchCards, deleteCard,  moveCard } from './operations';
+import { addCard, fetchCards, deleteCard, moveCard } from './operations';
 
 const initialState = {
     items: [],
@@ -48,10 +48,15 @@ const cardsSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
+            // .addCase(deleteCard.fulfilled, (state, action) => {
+            //     state.loading = false;
+            //     const cardId = action.payload;
+            //     state.items = state.items.filter(card => card._id !== cardId);
+            // })
             .addCase(deleteCard.fulfilled, (state, action) => {
-                state.loading = false;
-                const cardId = action.payload;
+                const cardId = action.meta.arg.cardId; // Використовуємо cardId з аргументів запиту
                 state.items = state.items.filter(card => card._id !== cardId);
+                state.loading = false;
             })
             .addCase(deleteCard.rejected, (state, action) => {
                 state.loading = false;
@@ -62,7 +67,7 @@ const cardsSlice = createSlice({
             })
             .addCase(moveCard.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                const { cardId, columnId } = action.payload; 
+                const { cardId, columnId } = action.payload;
                 const index = state.items.findIndex(card => card._id === cardId);
                 if (index !== -1) {
                     state.items[index].columnId = columnId;

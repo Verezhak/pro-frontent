@@ -14,15 +14,16 @@ const CardList = ({ columnId }) => {
     const selectedBoard = useSelector(selectSelectedBoard);
     const boardId = selectedBoard._id;
     const token = useSelector(selectToken);
-
     const columns = useSelector(state => {
         return selectColumnsByBoardId(state, boardId);
     });
-
     const [openDropdowns, setOpenDropdowns] = useState({});
     const [today, setToday] = useState(new Date());
-
     const filteredColumns = columns.filter((column) => column._id !== columnId);
+
+    const handleDelete = (cardId) => {
+        dispatch(deleteCard({ cardId, token }));
+    };
 
     const handleMoveCard = (newColumnId, cardId) => {
         if (cardId && newColumnId && newColumnId !== columnId) {
@@ -57,9 +58,7 @@ const CardList = ({ columnId }) => {
         return () => clearInterval(interval);
     }, []);
 
-    const handleDelete = (cardId) => {
-        dispatch(deleteCard({ cardId, token }));
-    };
+
     const toggleDropdown = (cardId) => {
         setOpenDropdowns((prevState) => ({
             ...Object.keys(prevState).reduce((acc, key) => {

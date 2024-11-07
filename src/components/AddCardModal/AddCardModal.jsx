@@ -38,10 +38,10 @@ const AddCardModal = ({ onAdd, onClose }) => {
                 <div>
                     <label>Колір:</label>
                     <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-                        <option value="low">Фіолетовий</option>
-                        <option value="medium">Рожевий</option>
-                        <option value="high">Зелений</option>
-                        <option value="without">Сірий</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="without">Without</option>
                     </select>
                 </div>
                 <button type="submit">Додати картку</button>
