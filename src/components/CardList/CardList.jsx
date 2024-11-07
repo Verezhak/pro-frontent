@@ -1,28 +1,48 @@
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCardsByColumnId } from "../../redux/card/selectors.js";
 import s from './CardList.module.css'
 import sprite from '../../icons/icons.svg'
 import { useEffect, useState } from "react";
-import MoveCardMenu from "../MoveCardMenu/MoveCardMenu.jsx";
+// import MoveCardMenu from "../MoveCardMenu/MoveCardMenu.jsx";
 import { selectSelectedBoard } from "../../redux/boards/selectors.js";
+import { selectToken } from "../../redux/auth/selectors.js";
+import { deleteCard, moveCard } from "../../redux/card/operations.js";
+import { selectColumnsByBoardId } from "../../redux/columns/selectors.js";
 
 
-const CardList = ({ columnId }) => {
+const CardList = ({ card, columnId }) => {
+    const dispatch = useDispatch();
     const cards = useSelector((state) => selectCardsByColumnId(state, columnId));
     const selectedBoard = useSelector(selectSelectedBoard);
     const boardId = selectedBoard._id;
-
-    const [expandedCardId, setExpandedCardId] = useState(null);
+    const token = useSelector(selectToken);
+    const columns = useSelector(state => selectColumnsByBoardId(state, card.boardId));
+const [expandedCardId, setExpandedCardId] = useState(null);
     const [today, setToday] = useState(new Date()); 
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [openDropdowns, setOpenDropdowns] = useState({});
+ 
+    
+    const handleMoveCard = (newColumnId) => {
+        if (card._id && newColumnId && newColumnId !== columnId) {
+            dispatch(moveCard({
+                cardId: card._id,
+                columnId: newColumnId,
+                boardId, // Додаємо boardId
+                token
+            }));
+            setOpenDropdowns(false); // Закриваємо дропдаун після переміщення
+        }
+    };
+    const filteredColumns = columns.filter((column) => column._id !== columnId);
 
     const isDeadlineToday = (deadline) => {
-            const deadlineDate = new Date(deadline);
-            const currentDate = new Date(today);
-            currentDate.setHours(0, 0, 0, 0);  
-            return currentDate.getTime() === deadlineDate.getTime();
-        };
+        const deadlineDate = new Date(deadline);
+        const currentDate = new Date(today);
+        currentDate.setHours(0, 0, 0, 0);
+        deadlineDate.setHours(0, 0, 0, 0);  // Очищаємо час
+        return currentDate.getTime() === deadlineDate.getTime();
+    };
 
     useEffect(() => {
             const interval = setInterval(() => {
@@ -36,8 +56,30 @@ const CardList = ({ columnId }) => {
             setExpandedCardId(expandedCardId === cardId ? null : cardId);
         };
       
-       const toggleMenu = () => {
-        setIsMenuOpen((prev) => !prev); 
+  
+    
+    const handleDelete = (cardId) => {
+        dispatch(deleteCard({ cardId, token }));
+    };
+
+    const getPriorityColor = (priority) => {
+        switch (priority) {
+            case 'low':
+                return '#9b59b6'; // фіолетовий
+            case 'medium':
+                return '#ff69b4'; // рожевий
+            case 'high':
+                return '#2ecc71'; // зелений
+            case 'without':
+            default:
+                return '#95a5a6'; // сірий
+        }
+    };
+    const toggleDropdown = (cardId) => {
+        setOpenDropdowns(prevState => ({
+            ...prevState,
+            [cardId]: !prevState[cardId]
+        }));
     };
 
     return (
@@ -48,7 +90,7 @@ const CardList = ({ columnId }) => {
             ) : (
                 cards.map((card) => (
                     <div key={card._id} className={s.card}
-                        style={{ '--card-color': card.color }}
+                        style={{ '--card-color': getPriorityColor(card.priority) }}
                     >
                         <h5 className={s.title}>{card.title}</h5>
                 
@@ -60,7 +102,7 @@ const CardList = ({ columnId }) => {
                         <span className={s.line}></span>
                         <div className={s.bottom}>
                             <div className={s.action}>
-                                <p className={s.priority}>Priority<span className={s.ops} style={{ backgroundColor: card.color }}></span></p>
+                                <p className={s.priority}>Priority<span className={s.ops} style={{ backgroundColor: getPriorityColor(card.priority) }}></span></p>
                                 <p className={s.deadline}>Deadline<span> {card.deadline}</span></p>
                             </div>
 
@@ -75,7 +117,7 @@ const CardList = ({ columnId }) => {
                                         </div>
                                     )
                                 }
-                                <button onClick={toggleMenu}>
+                                <button onClick={() => toggleDropdown(card._id)}>
                                     <svg className={s.icon} width="16" height="16">
                                         <use href={`${sprite}#icon-circle-right`} />
                                     </svg>
@@ -85,20 +127,24 @@ const CardList = ({ columnId }) => {
                                         <use href={`${sprite}#icon-pencil-01`} />
                                     </svg>
                                 </button>
-                                <button>
+                               <button onClick={() => handleDelete(card._id)}>
                                     <svg className={s.icon} width="16" height="16">
                                         <use href={`${sprite}#icon-trash-04`} />
                                     </svg>
                                 </button>
                             </div>
                         </div>
-                        {isMenuOpen && (
-                            <MoveCardMenu
-                                cardId={card._id}
-                                columnId={columnId}
-                                boardId={boardId}
-                                onClose={toggleMenu} 
-                            />
+                        {openDropdowns[card._id] && (
+                            <div className={s.dropdown}>
+                                {filteredColumns.map((column) => (
+                                    <button
+                                        key={column._id}
+                                        onClick={() => handleMoveCard(column._id, card)}
+                                    >
+                                        {column.name}
+                                    </button>
+                                ))}
+                            </div>
                         )}
                     </div>
                 ))
@@ -111,7 +157,21 @@ export default CardList;
 
 
 
+// const handleUpdateCard = (cardId, updatedFields) => {
+//     const existingCard = cards.find((card) => card._id === cardId); // знайти картку за ID
+//     if (!existingCard) return;
 
+//     dispatch(updateCard({
+//         cardId: existingCard._id,
+//         boardId: existingCard.boardId,
+//         columnId: existingCard.columnId,
+//         title: updatedFields.title || existingCard.title,
+//         description: updatedFields.description || existingCard.description,
+//         color: updatedFields.color || existingCard.color,
+//         date: updatedFields.date || existingCard.date,
+//         token
+//     }));
+// };
 
 
 // import { useSelector } from "react-redux";

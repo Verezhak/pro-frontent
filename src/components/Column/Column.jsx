@@ -1,9 +1,9 @@
 
-import {  useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectToken } from "../../redux/auth/selectors.js";
 import { selectSelectedBoard } from "../../redux/boards/selectors.js";
-import { addCard, fetchCards} from "../../redux/card/operations.js";
+import { addCard, fetchCards } from "../../redux/card/operations.js";
 import AddCardModal from "../AddCardModal/AddCardModal.jsx";
 import CardList from "../CardList/CardList.jsx";
 import s from './Column.module.css';

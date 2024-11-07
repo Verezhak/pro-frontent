@@ -4,11 +4,11 @@ import { useState } from 'react';
 const AddCardModal = ({ onAdd, onClose }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [color, setColor] = useState('blue');
+    const [priority, setPriority] = useState('without');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newTask = { title, description, color };
+        const newTask = { title, description, priority };
         onAdd(newTask);
         onClose();
     };
@@ -37,11 +37,11 @@ const AddCardModal = ({ onAdd, onClose }) => {
                 </div>
                 <div>
                     <label>Колір:</label>
-                    <select value={color} onChange={(e) => setColor(e.target.value)}>
-                        <option value="blue">Синій</option>
-                        <option value="pink">Рожевий</option>
-                        <option value="green">Зелений</option>
-                        <option value="gray">Сірий</option>
+                    <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+                        <option value="low">Фіолетовий</option>
+                        <option value="medium">Рожевий</option>
+                        <option value="high">Зелений</option>
+                        <option value="without">Сірий</option>
                     </select>
                 </div>
                 <button type="submit">Додати картку</button>

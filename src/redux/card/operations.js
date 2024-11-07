@@ -7,7 +7,7 @@ axios.defaults.baseURL = 'http://localhost:3000';
 
 export const fetchCards = createAsyncThunk(
     'cards/fetchCards',
-    async ({ boardId,token }, thunkAPI) => {
+    async ({ boardId, token }, thunkAPI) => {
         try {
             const response = await axios.get('/cards', {
                 headers: {
@@ -29,20 +29,20 @@ export const addCard = createAsyncThunk(
     async ({
         title,
         description,
-        color,
+        priority,
         boardId,
         columnId,
         token
     }, thunkAPI) => {
         try {
-            console.log("Request payload:", { boardId, columnId, title, description, color });
+            console.log("Request payload:", { boardId, columnId, title, description, priority });
 
             const response = await axios.post(
                 '/cards',
                 {
                     title,
                     description,
-                    color,
+                    priority,
                     boardId,
                     columnId
                 },
@@ -65,21 +65,22 @@ export const addCard = createAsyncThunk(
 
 export const updateCard = createAsyncThunk(
     'cards/updateCard',
-    async ({ boardId, cardId,newColumnId,  token }, thunkAPI) => {
+    async ({ cardId, boardId, columnId, title, description, color, date, token }, thunkAPI) => {
         try {
 
             const response = await axios.patch(`/cards/${cardId}`,
-                { boardId, columnId: newColumnId }, 
+                { boardId, columnId, title, description, color, date },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 },
-            
+
             );
             console.log("Response data:", response.data);
             return response.data;
         } catch (error) {
+            console.error('Error updating card:', error);
             return thunkAPI.rejectWithValue(error.response.data.message);
         }
     }
@@ -125,24 +126,23 @@ export const deleteCard = createAsyncThunk(
 //     }
 // );
 
-
 export const moveCard = createAsyncThunk(
     'cards/moveCard',
-    async ({ cardId, newColumnId, token }, thunkAPI) => {
-      try {
-        const response = await axios.patch(
-          `/cards/${cardId}/move`,  // використовуємо новий роут
-          { newColumnId },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        return response.data.data;  // повертаємо оновлену картку
-      } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data.message);
-      }
+    async ({ cardId, columnId, token }, thunkAPI) => {
+        try {
+            const response = await axios.patch(
+                `/cards/move/${cardId}`,
+                { columnId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error moving card:", error.response);
+            return thunkAPI.rejectWithValue(error.response.data.message);
+        }
     }
-  );
-  
+);

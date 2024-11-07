@@ -1,6 +1,6 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { addCard, fetchCards,  deleteCard, updateCard, moveCard} from './operations';
+import { addCard, fetchCards, deleteCard, updateCard, moveCard } from './operations';
 
 const initialState = {
     items: [],
@@ -19,17 +19,17 @@ const cardsSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchCards.fulfilled, (state, action) => {
-                console.log("Loaded cards:", action.payload.data); 
+                console.log("Loaded cards:", action.payload.data);
                 state.loading = false;
-            
+
                 // Прямо додаємо всі картки, без фільтрації
-                state.items = action.payload.data; 
+                state.items = action.payload.data;
             })
             // .addCase(fetchCards.fulfilled, (state, action) => {
             //     console.log("Loaded cards:", action.payload.data); 
             //     state.loading = false;
             //     const newCards= action.payload.data; 
- 
+
 
             //     state.items = [...state.items, ...newCards.filter(
             //         newCard => !state.items.some(existingCard => existingCard._id === newCard._id)
@@ -91,28 +91,33 @@ const cardsSlice = createSlice({
                 const updatedCard = action.payload;
                 const index = state.items.findIndex(card => card._id === updatedCard._id);
                 if (index !== -1) {
-                  state.items[index] = updatedCard;
+                    state.items[index] = updatedCard;
                 }
-              })
+            })
             .addCase(updateCard.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
+            .addCase(moveCard.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
             .addCase(moveCard.fulfilled, (state, action) => {
-                const updatedCard = action.payload;
-                // Знаходимо і оновлюємо картку в стейті
-                const index = state.items.findIndex(card => card._id === updatedCard._id); // змінено на items
-                if (index !== -1) {
-                  state.items[index] = updatedCard;
+                state.loading = false;
+                const movedCard = action.payload;
+                const existingCard = state.items.find(card => card._id === movedCard._id);
+                if (existingCard) {
+                    existingCard.columnId = movedCard.columnId;
                 }
-              })
-              .addCase(moveCard.rejected, (state, action) => {
+            })
+            .addCase(moveCard.rejected, (state, action) => {
+                state.loading = false;
                 state.error = action.payload;
-              });
-          },
-        });
-            
-    
+            });
+    },
+});
+
+
 
 
 export const cardsReducer = cardsSlice.reducer;
