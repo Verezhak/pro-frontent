@@ -20,7 +20,7 @@ const Board = () => {
     const token = useSelector(selectToken);
     const columns = useSelector(state => state.columns.items);
 
-   
+
 
 
     const handleOpenModal = () => {
@@ -37,7 +37,7 @@ const Board = () => {
         }
     }, [dispatch, selectedBoard, token]);
 
- 
+
 
     const handleAddColumn = columnName => {
         if (selectedBoard && token) {
@@ -62,7 +62,7 @@ const Board = () => {
 
             <div className={s.columns}>
                 {columns.map(column => (
-                    <Column key={column._id} columnId={column._id} />
+                    <Column key={column._id} columnId={column._id} title={column.title} />
                 ))}
             </div>
         </div>

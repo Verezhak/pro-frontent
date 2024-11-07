@@ -16,3 +16,4 @@ export const selectCardsByBoardId = (state, boardId) => {
 
 export const selectCardsByColumnId = (state, columnId) =>
   state.cards.items.filter(card => card.columnId === columnId);
+

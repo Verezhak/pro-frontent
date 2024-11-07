@@ -60,8 +60,9 @@ const persistConfig = {
   key: 'auth',
   version: 1,
   storage,
-  whitelist: ['token', 'user', 'cards'],
+  whitelist: ['token', 'user'],
 };
+
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 

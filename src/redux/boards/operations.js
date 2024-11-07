@@ -13,10 +13,9 @@ export const fetchBoards = createAsyncThunk(
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log("Fetched boards:", data);
+
             return data;
         } catch (e) {
-            console.error("Error fetching boards:", e);
             return thunkAPI.rejectWithValue(e.message);
         }
     }

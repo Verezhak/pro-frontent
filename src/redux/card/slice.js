@@ -1,6 +1,6 @@
 
 import { createSlice } from '@reduxjs/toolkit';
-import { addCard, fetchCards, deleteCard, updateCard, moveCard } from './operations';
+import { addCard, fetchCards, deleteCard,  moveCard } from './operations';
 
 const initialState = {
     items: [],
@@ -19,44 +19,18 @@ const cardsSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchCards.fulfilled, (state, action) => {
-                console.log("Loaded cards:", action.payload.data);
                 state.loading = false;
+                const newCards = action.payload.data;
 
-                // Прямо додаємо всі картки, без фільтрації
-                state.items = action.payload.data;
+
+                state.items = [...state.items, ...newCards.filter(
+                    newCard => !state.items.some(existingCard => existingCard._id === newCard._id)
+                )];
             })
-            // .addCase(fetchCards.fulfilled, (state, action) => {
-            //     console.log("Loaded cards:", action.payload.data); 
-            //     state.loading = false;
-            //     const newCards= action.payload.data; 
-
-
-            //     state.items = [...state.items, ...newCards.filter(
-            //         newCard => !state.items.some(existingCard => existingCard._id === newCard._id)
-            //     )];
-            // })
             .addCase(fetchCards.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            // .addCase(fetchCardById.pending, (state) => {
-            //     state.loading = true;
-            //     state.error = null;
-            // })
-            // .addCase(fetchCardById.fulfilled, (state, action) => {
-            //     state.loading = false;
-            //     const card = action.payload;
-            //     const index = state.items.findIndex(item => item._id === card._id);
-            //     if (index !== -1) {
-            //         state.items[index] = card;
-            //     } else {
-            //         state.items.push(card)
-            //     }
-            // })
-            // .addCase(fetchCardById.rejected, (state, action) => {
-            //     state.loading = false;
-            //     state.error = action.payload;
-            // })
             .addCase(addCard.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -83,37 +57,56 @@ const cardsSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(updateCard.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(updateCard.fulfilled, (state, action) => {
-                const updatedCard = action.payload;
-                const index = state.items.findIndex(card => card._id === updatedCard._id);
-                if (index !== -1) {
-                    state.items[index] = updatedCard;
-                }
-            })
-            .addCase(updateCard.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            })
             .addCase(moveCard.pending, (state) => {
-                state.loading = true;
-                state.error = null;
+                state.status = 'loading';
             })
             .addCase(moveCard.fulfilled, (state, action) => {
-                state.loading = false;
-                const movedCard = action.payload;
-                const existingCard = state.items.find(card => card._id === movedCard._id);
-                if (existingCard) {
-                    existingCard.columnId = movedCard.columnId;
+                state.status = 'succeeded';
+                const { cardId, columnId } = action.payload; 
+                const index = state.items.findIndex(card => card._id === cardId);
+                if (index !== -1) {
+                    state.items[index].columnId = columnId;
                 }
             })
             .addCase(moveCard.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            });
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            // .addCase(updateCard.pending, (state) => {
+            //     state.loading = true;
+            //     state.error = null;
+            // })
+            // .addCase(updateCard.fulfilled, (state, action) => {
+            //     const updatedCard = action.payload;
+            //     const index = state.items.findIndex(card => card._id === updatedCard._id);
+            //     if (index !== -1) {
+            //         state.items[index] = updatedCard;
+            //     }
+            // })
+            // .addCase(updateCard.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload;
+            // })
+
+            // .addCase(fetchCardById.pending, (state) => {
+            //     state.loading = true;
+            //     state.error = null;
+            // })
+            // .addCase(fetchCardById.fulfilled, (state, action) => {
+            //     state.loading = false;
+            //     const card = action.payload;
+            //     const index = state.items.findIndex(item => item._id === card._id);
+            //     if (index !== -1) {
+            //         state.items[index] = card;
+            //     } else {
+            //         state.items.push(card)
+            //     }
+            // })
+            // .addCase(fetchCardById.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload;
+            // })
+            ;
     },
 });
 
