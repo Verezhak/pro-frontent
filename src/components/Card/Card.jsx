@@ -53,23 +53,23 @@ const Card = ({ card,
                     {isDeadlineToday(deadline) && (
                         <div className={s.deadlineIcon}>
                             <svg width="16" height="16">
-                                <use href={`${sprite}#icon-bell`} />
+                                <use href={`${sprite}#bell-icon`} />
                             </svg>
                         </div>
                     )}
                     <button onClick={() => toggleDropdown(_id)}>
                         <svg className={s.icon} width="16" height="16">
-                            <use href={`${sprite}#icon-circle-right`} />
+                            <use href={`${sprite}#arrow-circle-icon`} />
                         </svg>
                     </button>
                     <button>
                         <svg className={s.icon} width="16" height="16">
-                            <use href={`${sprite}#icon-pencil-01`} />
+                            <use href={`${sprite}#pencil-icon`} />
                         </svg>
                     </button>
                     <button onClick={() => handleDelete(_id)}>
                         <svg className={s.icon} width="16" height="16">
-                            <use href={`${sprite}#icon-trash-04`} />
+                            <use href={`${sprite}#trash-icon`} />
                         </svg>
                     </button>
                 </div>

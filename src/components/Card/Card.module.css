@@ -22,10 +22,6 @@
 
 }
 
-/* .wrappDes{
-    display: flex;
-    height: 38px;justify-content: center;
-} */
 
 .description {
     width: 290px;
@@ -47,7 +43,7 @@
 }
 
 .expanded {
-    z-index: 100;
+    z-index: 1000;
     position: absolute;
     top: 43px;
     left: 14px;
@@ -56,30 +52,6 @@
     -webkit-line-clamp: unset;
 }
 
-
-/* .description {
-    width: 290px;
-    max-height: 32px; 
-    overflow: hidden;
-    color: rgba(22, 22, 22, 0.70);
-    text-overflow: ellipsis;
-    font-family: Poppins;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 16px;
-    letter-spacing: -0.24px;
-    margin-bottom: 14px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; 
-    cursor: pointer; 
-}
-
-.expanded {
-    max-height: none; 
-    -webkit-line-clamp: unset;
-} */
 
 
 .title {
@@ -175,6 +147,11 @@
 .icon {
     fill: transparent;
     stroke: #16161680;
+}
+
+.icon:hover,
+.icon:focus {
+    stroke: #BEDBB0;
 }
 
 /* trash-icon, pencil-icon, circle-icon */
