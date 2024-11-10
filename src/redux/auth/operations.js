@@ -6,14 +6,15 @@ axios.defaults.baseURL = 'https://pro-back-o62o.onrender.com';
 
 
 // Utility to add JWT
-const setAuthHeader = token => {
+
+export const setAuthHeader = token => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
+}; 
 
 // Utility to remove JWT
-// const clearAuthHeader = () => {
-//   axios.defaults.headers.common.Authorization = '';
-// };
+const clearAuthHeader = () => {
+  axios.defaults.headers.common.Authorization = '';
+};
 
 /*
  * POST @ /users/signup
@@ -23,12 +24,19 @@ export const register = createAsyncThunk(
   'auth/register',
   async (credentials, thunkAPI) => {
     try {
-      const { data } = await axios.post('/auth/register', credentials);
-      // After successful registration, add the token to the HTTP header
-      // setAuthHeader(res.data.token);
-      return data;
+      const res = await axios.post('/auth/register', credentials);
+      const { token, _id } = res.data.data;  // Отримуємо _id з відповіді
+
+      // Якщо токен присутній, встановлюємо його в заголовок авторизації
+      if (token) {
+        setAuthHeader(token);
+      }
+
+      // Повертаємо _id користувача разом з іншими даними
+      return { ...res.data.data, _id };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      const errorMessage = error.response?.data?.message || 'Реєстрація не вдалася';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
@@ -41,15 +49,25 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials, thunkAPI) => {
     try {
-      const { data } = await axios.post('/auth/login', credentials);
-      // After successful login, add the token to the HTTP header
-      // setAuthHeader(res.data.token);
-      return data;
+      const res = await axios.post('/auth/login', credentials);
+      const { accessToken, userId } = res.data.data;  // Отримуємо userId з відповіді
+
+      // Якщо токен присутній, встановлюємо його в заголовок авторизації
+      if (accessToken) {
+        setAuthHeader(accessToken);
+        localStorage.setItem('token', accessToken);
+
+      }
+
+      // Повертаємо userId разом з іншими даними
+      return { ...res.data.data, userId };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      const errorMessage = error.response?.data?.message || 'Логін не вдалося';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
+
 
 /*
  * POST @ /users/logout
@@ -58,6 +76,8 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
   try {
     await axios.post('/auth/logout');
+    localStorage.removeItem('token');
+    clearAuthHeader();
     // After a successful logout, remove the token from the HTTP header
     // clearAuthHeader();
   } catch (error) {

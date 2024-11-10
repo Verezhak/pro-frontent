@@ -88,6 +88,8 @@
     <symbol id="icon-arrow-down" viewBox="0 0 55 32">
 <path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="9.1429" d="M6.857 5.714l20.571 20.571 20.571-20.571"></path>
 </symbol>
-
+<symbol id="icon-check" viewBox="0 0 30 32">
+<path stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="4" stroke-width="3.3684" d="M7.579 12.211l7.579 7.579 7.579-7.579"></path>
+</symbol>
   </defs>
 </svg>

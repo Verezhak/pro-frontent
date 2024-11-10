@@ -1,46 +1,6 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// import {
-//   persistStore,
-//   persistReducer,
-//   FLUSH,
-//   REHYDRATE,
-//   PAUSE,
-//   PERSIST,
-//   PURGE,
-//   REGISTER,
-// } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage';
-// import { contactsReducer } from './contacts/slice';
-// import { filtersReducer } from './filters/slice';
-// import { authReducer } from './auth/slice';
-
-// // Persisting token field from auth slice to localstorage
-// const authPersistConfig = {
-//   key: 'auth',
-//   storage,
-//   whitelist: ['data', 'user'],
-// };
-
-// export const store = configureStore({
-//   reducer: {
-//     auth: persistReducer(authPersistConfig, authReducer),
-//     contacts: contactsReducer,
-//     filters: filtersReducer,
-//   },
-//   middleware: getDefaultMiddleware =>
-//     getDefaultMiddleware({
-//       serializableCheck: {
-//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-//       },
-//     }),
-//   devTools: process.env.NODE_ENV === 'development',
-// });
-
-// export const persistor = persistStore(store);
 
 
 import { configureStore } from "@reduxjs/toolkit";
-import { authReducer } from "./auth/slice";
 import {
   persistStore,
   persistReducer,
@@ -51,34 +11,49 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
+
 import storage from 'redux-persist/lib/storage';
+
 import { boardsReducer } from "./boards/slice.js";
 import { cardsReducer } from "./card/slice.js";
-import { columnsReducer } from "./columns/slice.js";
+import { columnsReducer } from './columns/slice.js'
+// import { columnsReducer } from "./columns/slice.js";
+import { setAuthHeader } from './auth/operations.js';
+import { userReducer } from "./user/slice.js";
+import { authReducer } from "./auth/slice.js";
+const persistedToken = localStorage.getItem('token');
+if (persistedToken) {
+  setAuthHeader(persistedToken)
+}
 
-const persistConfig = {
+const authPersistConfig = {
   key: 'auth',
-  version: 1,
   storage,
-  whitelist: ['token', 'user'],
+  whitelist: ['token'],
+};
+
+const userPersistConfig = {
+  key: 'user',
+  storage,
+  whitelist: ['name', 'email', 'theme', 'avatar', '_id'],
 };
 
 
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
-
 export const store = configureStore({
   reducer: {
-    auth: persistedAuthReducer,
+    auth: persistReducer(authPersistConfig, authReducer),
+    user: persistReducer(userPersistConfig, userReducer),
     boards: boardsReducer,
     columns: columnsReducer,
     cards: cardsReducer,
   },
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
+  devTools: process.env.NODE_ENV === 'development',
 });
 
 export const persistor = persistStore(store);

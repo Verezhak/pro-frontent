@@ -6,13 +6,9 @@ import axios from 'axios';
 
 export const fetchBoards = createAsyncThunk(
     'boards/fetchAll',
-    async ({ userId, token }, thunkAPI) => {
+    async ({ userId }, thunkAPI) => {
         try {
-            const { data } = await axios.get(`/boards?userId=${userId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { data } = await axios.get(`/boards?userId=${userId}`);
 
             return data;
         } catch (e) {
@@ -23,13 +19,9 @@ export const fetchBoards = createAsyncThunk(
 
 export const addBoard = createAsyncThunk(
     'boards/addBoard',
-    async ({ userId, boardName, token }, thunkAPI) => {
+    async ({ userId, boardName}, thunkAPI) => {
         try {
-            const { data } = await axios.post(`/boards?userId=${userId}`, { title: boardName }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { data } = await axios.post(`/boards?userId=${userId}`, { title: boardName });
             return data;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);

@@ -1,18 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectToken, selectUserId } from "../../redux/auth/selectors.js";
+import { selectUserId } from "../../redux/auth/selectors.js";
 import { useState } from "react";
 import { addBoard } from "../../redux/boards/operations.js";
 
 const AddBoardModal = ({ onClose }) => {
     const dispatch = useDispatch();
     const userId = useSelector(selectUserId);
-    const token = useSelector(selectToken);
     const [boardName, setBoardName] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await dispatch(addBoard({ userId, boardName, token }));
+            await dispatch(addBoard({ userId, boardName }));
             onClose();
         } catch (error) {
             console.error('Failed to create board: ', error);

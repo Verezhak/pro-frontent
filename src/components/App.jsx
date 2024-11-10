@@ -4,6 +4,7 @@ import AuthPage from '../pages/AuthPage/AuthPage'
 import HomePage from '../pages/HomePage/HomePage'
 
 function App() {
+	
 	return (
 		<Router>
 			<Routes>

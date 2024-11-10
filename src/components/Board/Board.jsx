@@ -3,7 +3,7 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsModalOpen, selectSelectedBoard } from "../../redux/boards/selectors.js";
-import { selectToken } from "../../redux/auth/selectors.js";
+
 import { useEffect } from "react";
 import { addColumn, fetchColumns } from "../../redux/columns/operations.js";
 import AddColumnModal from "../AddColumnModal/AddColumnModal.jsx";
@@ -17,7 +17,6 @@ const Board = () => {
     const dispatch = useDispatch();
     const isModalOpen = useSelector(selectIsModalOpen);
     const selectedBoard = useSelector(selectSelectedBoard);
-    const token = useSelector(selectToken);
     const columns = useSelector(state => state.columns.items);
 
 
@@ -32,16 +31,16 @@ const Board = () => {
     };
 
     useEffect(() => {
-        if (selectedBoard && token) {
-            dispatch(fetchColumns({ boardId: selectedBoard._id, token }));
+        if (selectedBoard) {
+            dispatch(fetchColumns({ boardId: selectedBoard._id }));
         }
-    }, [dispatch, selectedBoard, token]);
+    }, [dispatch, selectedBoard]);
 
 
 
     const handleAddColumn = columnName => {
-        if (selectedBoard && token) {
-            dispatch(addColumn({ boardId: selectedBoard._id, columnName, token }));
+        if (selectedBoard) {
+            dispatch(addColumn({ boardId: selectedBoard._id, columnName}));
         }
         handleCloseModal();
     };
@@ -70,3 +69,5 @@ const Board = () => {
 }
 
 export default Board;
+
+

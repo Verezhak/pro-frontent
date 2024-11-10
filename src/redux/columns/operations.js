@@ -7,13 +7,9 @@ import axios from 'axios';
 
 export const fetchColumns = createAsyncThunk(
     'columns/fetchColumns',
-    async ({ boardId, token }, thunkAPI) => {
+    async ({ boardId}, thunkAPI) => {
         try {
-            const { data } = await axios.get(`/columns/${boardId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const { data } = await axios.get(`/columns/${boardId}`);
             return data;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
@@ -23,16 +19,11 @@ export const fetchColumns = createAsyncThunk(
 
 export const addColumn = createAsyncThunk(
     'columns/addColumn',
-    async ({ boardId, columnName, token }, thunkAPI) => {
+    async ({ boardId, columnName}, thunkAPI) => {
         try {
             const { data } = await axios.post(
                 `/columns/${boardId}`,
-                { title: columnName },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                { title: columnName }
             );
             return data;
         } catch (error) {

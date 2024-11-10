@@ -7,14 +7,9 @@ import axios from 'axios';
 
 export const fetchCards = createAsyncThunk(
     'cards/fetchCards',
-    async ({ boardId, token }, thunkAPI) => {
+    async ({ boardId }, thunkAPI) => {
         try {
-            const response = await axios.get(`/cards/${boardId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                params: { boardId }
-            });
+            const response = await axios.get(`/cards/${boardId}`);
 
             return response.data;
         } catch (error) {
@@ -31,8 +26,7 @@ export const addCard = createAsyncThunk(
         description,
         priority,
         boardId,
-        columnId,
-        token
+        columnId
     }, thunkAPI) => {
         try {
             console.log("Request payload:", { boardId, columnId, title, description, priority });
@@ -45,12 +39,7 @@ export const addCard = createAsyncThunk(
                     priority,
                     boardId,
                     columnId
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
+                }
             );
             return response.data;
         } catch (error) {
@@ -89,13 +78,9 @@ export const addCard = createAsyncThunk(
 
 export const deleteCard = createAsyncThunk(
     'cards/deleteCard',
-    async ({ cardId, token }, { rejectWithValue }) => {
+    async ({ cardId}, { rejectWithValue }) => {
         try {
-            await axios.delete(`/cards/${cardId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await axios.delete(`/cards/${cardId}`);
             return cardId;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -107,11 +92,9 @@ export const deleteCard = createAsyncThunk(
 
 export const moveCard = createAsyncThunk(
     'cards/moveCard',
-    async ({ cardId, columnId, token }, { rejectWithValue }) => {
+    async ({ cardId, columnId }, { rejectWithValue }) => {
         try {
-            await axios.patch(`/cards/move/${cardId}`, { columnId }, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            await axios.patch(`/cards/move/${cardId}`, { columnId });
             return { cardId, columnId };
         } catch (error) {
             return rejectWithValue(error.message);
